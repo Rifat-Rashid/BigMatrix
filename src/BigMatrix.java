@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class BigMatrix {
 
@@ -37,7 +34,11 @@ public class BigMatrix {
     }
 
     public List<Integer> getNonEmptyRows() {
-        throw new UnsupportedOperationException();
+        ArrayList<Integer> rows = new ArrayList<>();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            rows.add(entry.getKey());
+        }
+        return rows;
     }
 
     public List<Integer> getNonEmptyRowsInColumn(int col) {
@@ -87,6 +88,10 @@ public class BigMatrix {
     }
 
     public BigMatrix multiplyByConstant(int constant) {
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            HashMap<Integer, Integer> temp = entry.getValue();
+
+        }
         throw new UnsupportedOperationException();
     }
 
