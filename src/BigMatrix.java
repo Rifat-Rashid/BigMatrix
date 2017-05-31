@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class BigMatrix {
@@ -10,18 +11,20 @@ public class BigMatrix {
         this.mapMatrix = new HashMap<>();
     }
 
+    // add @Param value at (row, col)
     public void setValue(int row, int col, int value) {
         // check to see if the row exists
         if (mapMatrix.containsKey(row)) {
             HashMap<Integer, Integer> temp = mapMatrix.get(row);
             temp.put(col, value);
-        }else{
-            HashMap<Integer,Integer> temp = new HashMap<>();
+        } else {
+            HashMap<Integer, Integer> temp = new HashMap<>();
             temp.put(col, value);
             mapMatrix.put(row, temp);
         }
     }
 
+    // get value at (row, col)
     public int getValue(int row, int col) {
         if (mapMatrix.containsKey(row)) {
             HashMap<Integer, Integer> temp = mapMatrix.get(row);
@@ -49,16 +52,38 @@ public class BigMatrix {
         throw new UnsupportedOperationException();
     }
 
+    // will return null if the row does not exist!!
     public int getRowSum(int row) {
-        throw new UnsupportedOperationException();
+        Integer sum = 0;
+        if (mapMatrix.containsKey(row)) {
+            HashMap<Integer, Integer> temp = mapMatrix.get(row);
+            for (Object o : temp.values())
+                sum += (Integer) o;
+            return sum;
+        }
+        return sum;
     }
 
     public int getColSum(int col) {
-        throw new UnsupportedOperationException();
+        Integer sum = 0;
+        // this is cancerous hf...
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            HashMap<Integer, Integer> temp = entry.getValue();
+            // check to see if @col has a value
+            if (temp.containsKey(col)) {
+                sum += temp.get(col);
+            }
+        }
+        return sum;
     }
 
+    // get sum of all elements in the array
     public int getTotalSum() {
-        throw new UnsupportedOperationException();
+        int sum = 0;
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            sum += getRowSum(entry.getKey());
+        }
+        return sum;
     }
 
     public BigMatrix multiplyByConstant(int constant) {
