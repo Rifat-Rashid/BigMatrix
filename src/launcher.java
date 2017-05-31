@@ -8,8 +8,9 @@ public class launcher {
         m.setValue(0, 1, 10);
         m.setValue(0, 2, 10);
         m.setValue(1, 1, 9);
-        m.setValue(2, 1, 10);
         System.out.println(m.getTotalSum());
-        System.out.println(m.getValue(1, 1));
+        System.out.println(m.multiplyByConstant(2));
+        System.out.println(m.getTotalSum());
+
     }
 }

@@ -87,12 +87,15 @@ public class BigMatrix {
         return sum;
     }
 
+    // i give up
     public BigMatrix multiplyByConstant(int constant) {
         for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
             HashMap<Integer, Integer> temp = entry.getValue();
-
+            for(Integer o : temp.values()){
+                o *= constant;
+            }
         }
-        throw new UnsupportedOperationException();
+        return new BigMatrix();
     }
 
     public BigMatrix addMatrix(BigMatrix other) {
