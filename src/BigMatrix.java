@@ -42,15 +42,40 @@ public class BigMatrix {
     }
 
     public List<Integer> getNonEmptyRowsInColumn(int col) {
-        throw new UnsupportedOperationException();
+        ArrayList<Integer> rows = new ArrayList<>();
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            HashMap<Integer, Integer> temp = entry.getValue();
+            if (temp.containsKey(col)) {
+                rows.add(entry.getKey());
+            }
+        }
+        return rows;
     }
 
     public List<Integer> getNonEmptyCols() {
-        throw new UnsupportedOperationException();
+        ArrayList<Integer> cols = new ArrayList<>();
+        List<Integer> allRows = getNonEmptyRows();
+        for (int i : allRows) {
+            HashMap<Integer, Integer> temp = mapMatrix.get(i);
+            for (Integer o : temp.keySet()) {
+                cols.add(o);
+            }
+        }
+        // remove duplicate cols
+        Set<Integer> t = new HashSet<>();
+        t.addAll(cols);
+        cols.clear();
+        cols.addAll(t);
+        return cols;
     }
 
     public List<Integer> getNonEmptyColsInRow(int row) {
-        throw new UnsupportedOperationException();
+        ArrayList<Integer> cols = new ArrayList<>();
+        HashMap<Integer, Integer> temp = mapMatrix.get(row);
+        for (Integer i : temp.keySet()) {
+            cols.add(i);
+        }
+        return cols;
     }
 
     // will return null if the row does not exist!!
@@ -89,16 +114,49 @@ public class BigMatrix {
 
     // i give up
     public BigMatrix multiplyByConstant(int constant) {
+        BigMatrix tempMatrix = new BigMatrix();
         for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
             HashMap<Integer, Integer> temp = entry.getValue();
-            for(Integer o : temp.values()){
-                o *= constant;
+            for (Map.Entry<Integer, Integer> tempEntry : temp.entrySet()) {
+                tempMatrix.setValue(entry.getKey(), tempEntry.getKey(), constant * tempEntry.getValue());
             }
         }
-        return new BigMatrix();
+        return tempMatrix;
     }
 
     public BigMatrix addMatrix(BigMatrix other) {
-        throw new UnsupportedOperationException();
+        BigMatrix secondTemp = other;
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            if (secondTemp.mapMatrix.containsKey(entry.getKey())) {
+                HashMap<Integer, Integer> temp = entry.getValue();  // our matrix
+                HashMap<Integer, Integer> otherTemp = secondTemp.mapMatrix.get(entry.getKey());
+                for (Map.Entry<Integer, Integer> tempEntry : temp.entrySet()) {
+                    if (otherTemp.containsKey(tempEntry.getKey())) {
+                        int valueOfMatrix1 = tempEntry.getValue();
+                        int valueOfMatrix2 = otherTemp.get(tempEntry.getKey());
+                        secondTemp.setValue(entry.getKey(), tempEntry.getKey(), valueOfMatrix1 + valueOfMatrix2);
+                    } else {
+                        secondTemp.setValue(entry.getKey(), tempEntry.getKey(), tempEntry.getValue());
+                    }
+                }
+            }else{
+                HashMap<Integer, Integer> t = mapMatrix.get(entry.getKey());
+                secondTemp.mapMatrix.put(entry.getKey(), t);
+            }
+        }
+        return secondTemp;
+    }
+
+    @Override
+    public String toString() {
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrix.entrySet()) {
+            HashMap<Integer, Integer> temp = entry.getValue();
+            System.out.print("Row " + entry.getKey() + ": ");
+            for (Map.Entry<Integer, Integer> tempEntry : temp.entrySet()) {
+                System.out.print(tempEntry.getValue() + ", ");
+            }
+            System.out.println();
+        }
+        return "";
     }
 }
