@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BigMatrix {
 
@@ -9,6 +10,7 @@ public class BigMatrix {
 
     public BigMatrix() {
         this.mapMatrixRowCol = new HashMap<>();
+        this.mapMatrixColRow = new HashMap<>();
     }
 
     // add @Param value at (row, col)
@@ -34,7 +36,10 @@ public class BigMatrix {
         }
     }
 
-    // get value at (row, col)
+    /*
+     *  returns the value at the given row/column position.
+     *  It should return 0 if no value has been set at the given location.
+     */
     public int getValue(int row, int col) {
         if (mapMatrixRowCol.containsKey(row)) {
             HashMap<Integer, Integer> temp = mapMatrixRowCol.get(row);
@@ -46,7 +51,7 @@ public class BigMatrix {
         throw new NoSuchElementException();
     }
 
-    //@getNonEmptyRows returns a list of the rows that have at least one column with a non-zero value
+    //  returns a list of the rows that have at least one column with a non-zero value
     public List<Integer> getNonEmptyRows() {
         ArrayList<Integer> rows = new ArrayList<>();
         for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrixRowCol.entrySet()) {
@@ -57,42 +62,42 @@ public class BigMatrix {
         return rows;
     }
 
+    //  returns a list of rows that have at least one non-zero value in the given column.
     public List<Integer> getNonEmptyRowsInColumn(int col) {
         ArrayList<Integer> rows = new ArrayList<>();
-        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrixRowCol.entrySet()) {
-            HashMap<Integer, Integer> temp = entry.getValue();
-            if (temp.containsKey(col)) {
+        HashMap<Integer, Integer> temp = mapMatrixColRow.get(col);
+        for (Map.Entry<Integer, Integer> entry : temp.entrySet()) {
+            if (entry.getValue() != 0) {
                 rows.add(entry.getKey());
             }
         }
         return rows;
     }
 
-    //getNonEmptyCols returns a list of the columns that have at least one row with a non-zero value
+    //  returns a list of the columns that have at least one row with a non-zero value
     public List<Integer> getNonEmptyCols() {
         ArrayList<Integer> cols = new ArrayList<>();
-        List<Integer> allRows = getNonEmptyRows();
-        for (int i : allRows) {
-            HashMap<Integer, Integer> temp = mapMatrixRowCol.get(i);
-            for (Integer o : temp.keySet()) {
-                cols.add(o);
-            }
+        for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapMatrixColRow.entrySet()) {
+            if (getColSum(entry.getKey()) != 0)
+                cols.add(entry.getKey());
         }
-        // remove duplicate cols
-        Set<Integer> t = new HashSet<>();
-        t.addAll(cols);
-        cols.clear();
-        cols.addAll(t);
         return cols;
     }
 
+
+    //  returns a list of columns that have at least one non-zero value in the given row
     public List<Integer> getNonEmptyColsInRow(int row) {
-        ArrayList<Integer> cols = new ArrayList<>();
+        /*
+        ArrayList<Integer> rows = new ArrayList<>();
         HashMap<Integer, Integer> temp = mapMatrixRowCol.get(row);
-        for (Integer i : temp.keySet()) {
-            cols.add(i);
+        for (Map.Entry<Integer, Integer> entry : temp.entrySet()) {
+            if (entry.getValue() != 0) {
+                rows.add(entry.getKey());
+            }
         }
-        return cols;
+        return rows;
+        */
+        return mapMatrixRowCol.get(row).entrySet().stream().filter(e -> e.getValue() != 0).map(e -> e.getKey()).collect(Collectors.toList());
     }
 
     // will return null if the row does not exist!!
